@@ -2,25 +2,55 @@ import constants_pkg::*;
 
 module skid_buffer(
 	//inputs 
-	clk, m_rsp_vld, m_rsp_data,
+	clk,
+	rst_n,
+	src_rdy,
+	m_rsp_vld,
+	m_rsp_data,
 	//outputs
-	src_vld, src_data,
+	src_vld,
+	src_data
 );
 
-	input clk, m_rsp_vld, m_rsp_data;
-	output src_vld, src_data;
+	input wire clk, rst_n;
+	input wire src_rdy;
+	input wire m_rsp_vld;
+	input wire [DATA_WIDTH-1:0] m_rsp_data;
+	
+	output reg src_vld;
+	output reg [DATA_WIDTH-1:0] src_data;
 
-	reg skid_reg;
-	reg [DATA_WIDTH-1:0] src_data;
+	// Internal skid register
+	reg [DATA_WIDTH-1:0] skid_reg;
+	reg skid_valid;
 
-	always @ (posedge clk) begin
-		if (src_rdy) begin
-			src_data <= m_rsp_data;
+	always @ (posedge clk or negedge rst_n) begin
+		if (!rst_n) begin
+			src_vld <= 0;
+			src_data <= 0;
+			skid_reg <= 0;
+			skid_valid <= 0;
 		end
-		
-		if (!src_rdy && m_rsp_vld) begin
-			skid_reg <= m_rsp_data;
-			src_vld <= 1;
+		else begin
+			if (src_rdy) begin
+				if (skid_valid) begin
+					src_data <= skid_reg;
+					src_vld <= 1;
+					skid_valid <= 0;
+				end
+				else if (m_rsp_vld) begin
+					src_data <= m_rsp_data;
+					src_vld <= 1;
+				end
+				else begin
+					src_vld <= 0;
+				end
+			end
+			else if (m_rsp_vld && !skid_valid) begin
+				skid_reg <= m_rsp_data;
+				skid_valid <= 1;
+			end
 		end
 	end
+
 endmodule

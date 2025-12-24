@@ -8,6 +8,7 @@ package constants_pkg;
     parameter int REG_W_BASE_ID = 0;
     parameter int REG_X_BASE_ID = 1;
 
+    parameter int FETCH_ENGINE_OPCODE_LENGTH = 2;
     // Fetch Engine Constants
     parameter int FETCH_ENGINE_SET_W_BASE = 2'b00;
     parameter int FETCH_ENGINE_SET_X_BASE = 2'b01;

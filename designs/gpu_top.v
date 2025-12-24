@@ -1,63 +1,93 @@
 import constants_pkg::*;
 
 module gpu_top(
-    //inputs
-    clk, src_vld, src_rdy, src_data,
-    //outputs
-    snk_vld, snk_rdy, snk_data, busy, result_vld, result_rdy, result_data,
+    // System
+    clk,
+    rst_n,
+    
+    // Control Interface
+    start,
+    op_code,
+    cfg_data,
+    
+    // Memory Request Interface (to external SRAM)
+    m_req_vld,
+    m_req_rdy,
+    m_req_addr,
+    
+    // Memory Response Interface (from external SRAM)
+    m_rsp_vld,
+    m_rsp_rdy,
+    m_rsp_data,
+    
+    // Result Output Interface
+    result_vld,
+    result_rdy,
+    result_data,
+    
+    // Status
+    busy
 );
-    input clk, src_vld, src_rdy, src_data;
-    wire snk_vld, snk_rdy, snk_data, busy, result_vld, result_rdy, result_data;
+    input wire clk, rst_n, start;
+    input wire [1:0] op_code;
+    input wire [ADDR_WIDTH-1:0] cfg_data;
+    
+    // Memory interface (connects to external SRAM)
+    output wire m_req_vld;
+    input wire m_req_rdy;
+    output wire [ADDR_WIDTH-1:0] m_req_addr;
+    
+    input wire m_rsp_vld;
+    output wire m_rsp_rdy;
+    input wire [DATA_WIDTH-1:0] m_rsp_data;
+    
+    // Result output
+    output wire result_vld;
+    input wire result_rdy;
+    output wire [ACC_WIDTH-1:0] result_data;
+    
+    output wire busy;
 
-    reg [ADDR_WIDTH-1:0] REG_W_BASE;
-    reg [ADDR_WIDTH-1:0] REG_X_BASE;
-    reg [1:0] REG_STATUS;
+    // Internal wires connecting fetch_engine to matrix_core
+    wire core_snk_vld;
+    wire core_snk_rdy;
+    wire [DATA_WIDTH-1:0] core_snk_data;
     
-    reg fetch_engine_rst_n;
-    reg fetch_engine_op_code;
-    reg fetc_engine_start;
-    reg fetch_engine_cfg_data;
-    reg fetch_engine_m_req_vld;
-    reg fetch_engine_m_req_rdy;
-    reg fetch_engine_m_req_addr;
-    reg fetch_engine_m_rsp_vld;
-    reg fetch_engine_m_rsp_rdy;
-    reg fetch_engine_m_rsp_addr;
-    
+    // Fetch engine instance
     fetch_engine fetch_engine_inst(
         .clk(clk),
-        .rst_n(fetch_engine_rst_n),
-        .start(fetch_engine_start),
-        .op_code(fetch_engine_op_code),
-        .cfg_data(fetch_engine_cfg_data),
-        .m_req_vld(fetch_engine_m_req_vld),
-        .m_req_rdy(fetch_engine_m_req_rdy),
-        .m_req_addr(fetch_engine_m_req_addr),
-        .m_rsp_vld(fetch_engine_m_rsp_vld),
-        .m_rsp_data(fetch_engine_m_rsp_data),
-        .src_vld(output_vld),
-        .src_rdy(output_rdy),
-        .src_data(output_data)
+        .rst_n(rst_n),
+        .start(start),
+        .op_code(op_code),
+        .cfg_data(cfg_data),
+        // Memory interface (external)
+        .m_req_vld(m_req_vld),
+        .m_req_rdy(m_req_rdy),
+        .m_req_addr(m_req_addr),
+        .m_rsp_vld(m_rsp_vld),
+        .m_rsp_rdy(m_rsp_rdy),
+        .m_rsp_data(m_rsp_data),
+        // Stream to matrix_core
+        .src_vld(core_snk_vld),
+        .src_rdy(core_snk_rdy),
+        .src_data(core_snk_data)
     );
 
-    always @ (posedge clk) begin
-        if (op_code == FETCH_ENGINE_SET_W_BASE) begin
-            REG_W_BASE <= cfg_data;
-        end
-        else if (op_code == FETCH_ENGINE_SET_X_BASE) begin
-            REG_X_BASE <= cfg_data;
-        end
-        else if (op_code == FETCH_ENGINE_RUN) begin
-            fetch_engine_start <= 1;
-            fetch_engine_op_code <= op_code;
-            fetch_engine_cfg_data <= cfg_data;
-            fetch_engine_m_req_vld <= 1;
-            fetch_engine_m_req_addr <= REG_W_BASE;
-            fetch_engine_m_req_rdy <= 1;
-            fetch_engine_m_rsp_vld <= 0;
-            fetch_engine_m_rsp_rdy <= 0;
-            fetch_engine_m_rsp_addr <= 0;
-            fetch_engine_m_rsp_addr <= 0;
-        end
-    end
+    // Matrix core instance
+    matrix_core matrix_core_inst(
+        .clk(clk),
+        .rst_n(rst_n),
+        // Stream from fetch_engine
+        .snk_vld(core_snk_vld),
+        .snk_rdy(core_snk_rdy),
+        .snk_data(core_snk_data),
+        // Result output
+        .src_vld(result_vld),
+        .src_rdy(result_rdy),
+        .src_data(result_data)
+    );
+
+    // Simple busy signal (can be improved)
+    assign busy = (m_req_vld || result_vld);
+
 endmodule
