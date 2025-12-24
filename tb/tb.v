@@ -1,19 +1,22 @@
 module tb;
-  reg i_1, i_2, i_3;
-  wire o_1, o_2;
+  input clk, src_vld, src_rdy, src_data;
+  wire snk_vld, snk_rdy, snk_data;
+  output busy, result_vld, result_rdy, result_data;
 
-  producer dut(.i_1(i_1), .i_2(i_2), .i_3(i_3), .o_1(o_1), .o_2(o_2));
+  gpu_top gpu_top_inst(.clk(clk), 
+    .src_vld(src_vld), 
+    .src_rdy(src_rdy), 
+    .src_data(src_data), 
+    .snk_vld(snk_vld), 
+    .snk_rdy(snk_rdy), 
+    .snk_data(snk_data), 
+    .busy(busy), 
+    .result_vld(result_vld), 
+    .result_rdy(result_rdy), 
+    .result_data(result_data)
+  );
 
   initial begin
-    $dumpfile("wave.vcd");
-    $dumpvars(0, tb);
-    $monitor("t=%0t i=%b%b%b o=%b%b", $time, i_1, i_2, i_3, o_1, o_2);
-
-    i_1=0; i_2=0; i_3=0;
-    #10 i_1=1;
-    #10 i_2=1;
-    #10 i_3=1;
-    #10 $finish;
   end
 endmodule
 
