@@ -15,11 +15,11 @@ module skid_buffer(
 	always @ (posedge clk) begin
 		if (src_rdy) begin
 			src_data <= m_rsp_data;
-			src_vld <= 1;
 		end
 		
 		if (!src_rdy && m_rsp_vld) begin
 			skid_reg <= m_rsp_data;
+			src_vld <= 1
 		end
 	end
 endmodule
