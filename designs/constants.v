@@ -10,14 +10,14 @@ package constants_pkg;
 
     parameter int FETCH_ENGINE_OPCODE_LENGTH = 2;
     // Fetch Engine Constants
-    parameter int FETCH_ENGINE_SET_W_BASE = 2'b00;
-    parameter int FETCH_ENGINE_SET_X_BASE = 2'b01;
-    parameter int FETCH_ENGINE_RUN = 2'b10;
-    parameter int FETCH_ENGINE_NOOP = 2'b11;
+    parameter int SET_W_BASE = 2'b00;
+    parameter int SET_X_BASE = 2'b01;
+    parameter int RUN = 2'b10;
+    parameter int RES = 2'b11;
 
     // Matrix Core Constants
-    parameter int MATRIX_CORE_LOAD_W = 2'b00;
-    parameter int MATRIX_CORE_LOAD_X = 2'b01;   
-    parameter int MATRIX_CORE_COMPUTE = 2'b10;
-    parameter int MATRIX_CORE_FLUSH = 2'b11;
+    parameter int LOAD_W   = 2'b00;
+    parameter int LOAD_X   = 2'b01;
+    parameter int COMPUTE  = 2'b10;
+    parameter int FLUSH    = 2'b11;
 endpackage

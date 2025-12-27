@@ -78,9 +78,9 @@ module fetch_engine(
 				IDLE: begin
 					if (start) begin
 						case (op_code)
-							2'b00: REG_W_BASE <= cfg_data;  // SET_W_BASE
-							2'b01: REG_X_BASE <= cfg_data;  // SET_X_BASE
-							2'b10: begin                     // RUN
+							SET_W_BASE: REG_W_BASE <= cfg_data;  // SET_W_BASE
+							SET_X_BASE: REG_X_BASE <= cfg_data;  // SET_X_BASE
+							RUN: begin                     // RUN
 								state <= FETCH_W;
 								fetch_cnt <= 0;
 								m_req_vld <= 1;

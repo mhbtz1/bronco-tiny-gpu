@@ -34,20 +34,22 @@ module skid_buffer(
 		else begin
 			if (src_rdy) begin
 				if (skid_valid) begin
-					src_data <= skid_reg;
-					src_vld <= 1;
-					skid_valid <= 0;
+					$display("[%0t] SKID_BUFFER: Passing through buffered data = 0x%h", $time, skid_reg);
+					src_data <= skid_reg;    
+					src_vld <= 1;            
+					skid_valid <= 0;         
 				end
 				else if (m_rsp_vld) begin
-					src_data <= m_rsp_data;
-					src_vld <= 1;
+					$display("[%0t] SKID_BUFFER: Passing through new data from memory = 0x%h", $time, m_rsp_data);
+					src_data <= m_rsp_data;  
+					src_vld <= 1;            
 				end
 				else begin
-					src_vld <= 0;
+					src_vld <= 0;            
 				end
 			end
 			else if (m_rsp_vld && !skid_valid) begin
-				skid_reg <= m_rsp_data;
+				skid_reg <= m_rsp_data; 
 				skid_valid <= 1;
 			end
 		end

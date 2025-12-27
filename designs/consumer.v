@@ -17,12 +17,6 @@ module matrix_core(
     reg [DATA_WIDTH-1:0] x_mem [0:X_DEPTH-1];
     reg [ACC_WIDTH-1:0] acc_mem [0:X_DEPTH-1];
 
-    // State machine
-    localparam LOAD_W   = 2'b00;
-    localparam LOAD_X   = 2'b01;
-    localparam COMPUTE  = 2'b10;
-    localparam FLUSH    = 2'b11;
-    
     reg [1:0] state;
     reg [4:0] cnt;
 
