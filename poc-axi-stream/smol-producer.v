@@ -15,7 +15,6 @@ module smolproducer(
 
     always @ (posedge clk or negedge rst_n) begin
       if (!rst_n) begin
-        // on a hardware reset, deassert vld
         vld <= 0;
         next_data <= 0;
       end 

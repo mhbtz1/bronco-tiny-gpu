@@ -12,7 +12,6 @@ module smolconsumer(
 
     always @ (posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            // on a hardware reset, deassert rdy
             rdy <= 0;
         end else if (vld) begin
             $display("data processed = [%08h]", data);
