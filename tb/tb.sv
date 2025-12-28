@@ -1,5 +1,11 @@
 import constants_pkg::*;
 
+module uvm_monitor;
+
+endmodule
+
+
+// DUT 
 module tb;
   reg clk, rst_n, start;
   reg [1:0] op_code;
@@ -90,7 +96,7 @@ module tb;
     $finish;
   end
   
-  reg [DATA_WIDTH-1:0] memory [0:(1<<ADDR_WIDTH)-1];  // 256 bytes
+  reg [DATA_WIDTH-1:0] memory [0:(1<<ADDR_WIDTH)-1];
   reg [ADDR_WIDTH-1:0] pending_addr;
   reg pending_request;
   reg [1:0] latency_counter;
@@ -136,11 +142,11 @@ module tb;
     end
     else begin
       if (m_req_vld && m_req_rdy) begin
-        m_rsp_data <= memory[m_req_addr];  // Read from memory
+        m_rsp_data <= memory[m_req_addr];  
         m_rsp_vld <= 1;
       end
       else if (m_rsp_rdy && m_rsp_vld) begin
-        m_rsp_vld <= 0;  // Clear valid after handshake
+        m_rsp_vld <= 0;
       end
     end
   end

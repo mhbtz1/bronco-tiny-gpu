@@ -38,11 +38,9 @@ module fetch_engine(
 	output wire [DATA_WIDTH-1:0] src_data;
 	output wire m_rsp_rdy;
 
-	// Configuration registers
 	reg [ADDR_WIDTH-1:0] REG_W_BASE;
 	reg [ADDR_WIDTH-1:0] REG_X_BASE;
 
-	// Skid buffer for response handling
 	skid_buffer skid_buffer_inst(
 		.clk(clk),
 		.rst_n(rst_n),
@@ -53,7 +51,6 @@ module fetch_engine(
 		.src_data(src_data)
 	);
 
-	// FSM states
 	localparam IDLE     = 2'b00;
 	localparam FETCH_W  = 2'b01;
 	localparam FETCH_X  = 2'b10;
@@ -62,7 +59,6 @@ module fetch_engine(
 	reg [1:0] state;
 	reg [4:0] fetch_cnt;
 
-	// Address generation FSM
 	always @ (posedge clk or negedge rst_n) 
 	begin
 		if (!rst_n) begin
@@ -78,9 +74,9 @@ module fetch_engine(
 				IDLE: begin
 					if (start) begin
 						case (op_code)
-							SET_W_BASE: REG_W_BASE <= cfg_data;  // SET_W_BASE
-							SET_X_BASE: REG_X_BASE <= cfg_data;  // SET_X_BASE
-							RUN: begin                     // RUN
+							SET_W_BASE: REG_W_BASE <= cfg_data; 
+							SET_X_BASE: REG_X_BASE <= cfg_data;
+							RUN: begin
 								state <= FETCH_W;
 								fetch_cnt <= 0;
 								m_req_vld <= 1;

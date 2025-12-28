@@ -20,7 +20,6 @@ module skid_buffer(
 	output reg src_vld;
 	output reg [DATA_WIDTH-1:0] src_data;
 
-	// Internal skid register
 	reg [DATA_WIDTH-1:0] skid_reg;
 	reg skid_valid;
 
@@ -45,7 +44,7 @@ module skid_buffer(
 					src_vld <= 1;            
 				end
 				else begin
-					src_vld <= 0;            
+					src_vld <= 0; 
 				end
 			end
 			else if (m_rsp_vld && !skid_valid) begin

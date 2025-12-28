@@ -1,5 +1,5 @@
 all:
-	iverilog -g2012 -o gpu_top.vvp designs/constants.v designs/producer.v designs/consumer.v designs/skid_buffer.v designs/gpu_top.v tb/tb.v
+	iverilog -g2012 -o gpu_top.vvp designs/constants.sv designs/producer.sv designs/consumer.sv designs/skid_buffer.sv designs/gpu_top.sv tb/tb.sv
 
 clean:
 	rm -f *.vvp *.vcd
