@@ -1,3 +1,9 @@
+typedef { 
+    int a;
+    real b;
+} test_struct;
+
+
 module testbench;
     reg clk;
     reg rst_n;
@@ -5,8 +11,19 @@ module testbench;
     wire wr;
     wire data;
 
+    logic [3:0] test_data;
+    logic [3:0] test_en;
+
+    bit [7:0] random;
+    byte same_random;
+
     initial begin
         clk = 0;
+    end
+
+    initial begin
+        test_data = 4'b0101;
+        $display("test_data = %0d", test_data);
     end
 
     test_design dut(
