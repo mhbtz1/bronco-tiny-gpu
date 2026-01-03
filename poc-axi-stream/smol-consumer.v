@@ -14,6 +14,7 @@ module smolconsumer(
         if (!rst_n) begin
             rdy <= 0;
         end else if (vld) begin
+            // data which has been retrieved from the consumer
             $display("data processed = [%08h]", data);
             rdy <= 1;
         end
