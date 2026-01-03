@@ -1,4 +1,5 @@
 class gpu_memory_monitor extends uvm_monitor;
+    // uvm_monitor, uvm_component, uvom_component_utils, uvm_analysis_port
     `uvm_component_utils(gpu_memory_monitor)
     virtual gpu_memory_if vif;
     
