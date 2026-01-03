@@ -1,3 +1,9 @@
-module test_design;
-    
+module test_design(
+    clk,
+    rst_n,
+    en,
+    wire,
+    data
+);
+
 endmodule

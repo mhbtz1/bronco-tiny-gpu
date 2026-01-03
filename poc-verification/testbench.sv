@@ -1,47 +1,32 @@
-typedef { 
-    int a;
-    real b;
-} test_struct;
+class Register
+    string name;
+    rand bit [3:0] rank;
+    rand bit [3:0] pages;
 
+    function new(string name) 
+        this.name = name
+    endfunction
+
+    function print()
+        $display("name = %0s | rank = %0d | pages = %0d", this.name, this.rank, this.pages)
+    endfunction
+endclass
 
 module testbench;
-    reg clk;
-    reg rst_n;
-    wire en;
-    wire wr;
-    wire data;
-
-    logic [3:0] test_data;
-    logic [3:0] test_en;
-
-    bit [7:0] random;
-    byte same_random;
+    bit [3:0][7:0] test_data;
+    Register rt[4];
+    string names[4] = '{"a", "b", "c", "d"};
 
     initial begin
-        clk = 0;
-    end
+        for (int i = 0; i < 4; i++) begin
+            rt[i] = new (names[i]);
+            rt[i].randomize();
+            rt[i].print()
+        end
 
-    initial begin
-        test_data = 4'b0101;
-        $display("test_data = %0d", test_data);
-    end
-
-    test_design dut(
-        .clk(clk)
-        .rst_n(rst_n)
-        .en(en)
-        .wire(wire)
-        .data(data)
-    );
-    
-    task apply_reset() 
-        #5 rst_n <= 0;
-        #20 rst_n <= 1;
-    endtask
-
-    forever #5 clk = ~clk;
-    always @(posedge clk)
-    begin
-
+        test_data = 8'hdeadbeef;
+        for (int i = 0; i < $size(test_data); i++) begin
+            $display("test_data[%0d] = %0d", i, test_data[i]);
+        end
     end
 endmodule
